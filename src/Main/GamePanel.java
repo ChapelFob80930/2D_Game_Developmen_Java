@@ -14,39 +14,132 @@ public class gamePanel extends JPanel implements Runnable{
     final int screenWidth = tileSize * maxScreenCol; // 768 pixels
     final int screenHeight = tileSize * maxScreenRow; // 576 pixels
 
+    //FPS
+    int fps = 60;
+
+    KeyHandler keyH = new KeyHandler();
     Thread gameThread;
+
+    //variables to set payer's default position
+    int playerX = 100;
+    int playerY = 100;
+    int playerSpeed = 4;
 
     public gamePanel(){
         this.setPreferredSize(new Dimension(screenWidth,screenHeight));
         this.setBackground(Color.black);
         this.setDoubleBuffered(true);
+        this.addKeyListener(keyH);
+        this.setFocusable(true);
     }
 
     public void startGameThread(){
-        gameThread=new Thread(this);
+        gameThread = new Thread(this);
         gameThread.start();
     }
 
+//GAME LOOP 1 : SLEEP METHOD
 
+//    @Override
+//    public void run() {
+//
+//        double drawInterval = 1000000000/fps;  //1 second= 1000000000 nanoseconds (using nanoseconds as for more precise calculation)
+//        // 1000000000/60 = 16,666,666.66666667 nanoseconds i.e. we draw the screen every 16,666,666.66666667 nanoseconds i.e. every 0.0167 seconds
+//
+//        double nextDrawTime = System.nanoTime() + drawInterval;
+//        //if we draw the screen at a particular time (say now) the next draw time will be current time + draw interval (0.0167 seconds later)
+//
+//        while(gameThread!=null){
+//
+//            //1. UPDATE: Updating information such as character information
+//            update();
+//
+//            //2. DRAW: Drawing the screen with the updated information
+//            repaint();
+//
+//            try {
+//                double remainingTime = nextDrawTime - System.nanoTime();
+//                //returns how much time remaining for the next draw time, and we need to let the thread sleep for the remaining time
+//
+//                remainingTime = remainingTime/1000000;
+//                // 1 second = 1000000000 nanosecond
+//                // 1 second = 1000 millisecond
+//                // converting nanosecond to millisecond as sleep accepts the time in milliseconds
+//
+//                if(remainingTime < 0)
+//                {
+//                    remainingTime = 0;
+//                }
+//
+//                Thread.sleep((long)remainingTime);
+//
+//                nextDrawTime += drawInterval;
+//                // next draw time is 0.0167 seconds later
+//            }
+//
+//            catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//
+//
+//    }
+
+
+
+// GAME LOOP 2 : DELTA or ACCUMULATOR METHOD
     @Override
     public void run() {
 
+        double drawInterval = 1000000000/fps;
+        double delta = 0;
+        long lastTime = System.nanoTime();
+        long currentTime;
+        long timer = 0; //not part of method, used to display the fps
+        int drawCount = 0;
+
         while(gameThread!=null){
 
-            //System.out.println("Game loop is running");
+            currentTime = System.nanoTime();
 
+            delta += (currentTime - lastTime) / drawInterval;
+            timer += (currentTime - lastTime);
+            lastTime = currentTime;
 
-            //1. UPDATE: Updating information such as character information
-            update();
+            if(delta >= 1){
+                update();
+                repaint();
+                delta--;
+                drawCount++;
+            }
 
-            //2. DRAW: Drawing the screen with the updated information
-            repaint();
+            if(timer >= 1000000000){
+                System.out.println("FPS: "+drawCount);
+                drawCount = 0;
+                timer = 0;
+            }
+
         }
-
 
     }
 
+
+
+
     public void update(){
+
+        if(keyH.upPressed == true) {
+            playerY -= playerSpeed;
+        }
+        else if (keyH.downPressed == true) {
+            playerY += playerSpeed;
+        }
+        else if(keyH.rightPressed == true) {
+            playerX += playerSpeed;
+        }
+        else if(keyH.leftPressed == true) {
+            playerX -= playerSpeed;
+        }
 
     }
 
@@ -57,8 +150,10 @@ public class gamePanel extends JPanel implements Runnable{
 
         g2.setColor(Color.white);
 
-        g2.fillRect(100,100,tileSize,tileSize);
+        g2.fillRect(playerX,playerY,tileSize,tileSize);
 
         g2.dispose();
     }
+
+
 }
