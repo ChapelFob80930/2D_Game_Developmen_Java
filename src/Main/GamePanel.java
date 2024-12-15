@@ -1,20 +1,21 @@
 package Main;
 
 import entity.Player;
+import tile.TileManager;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class gamePanel extends JPanel implements Runnable{
     //SCREEN SETTINGS
-    final int originalTileSize = 16; //16x16 time
-    final int scale= 3;
+    public final int originalTileSize = 16; //16x16 time
+    public final int scale= 3;
 
     public final int tileSize=originalTileSize*scale; //48x48 title
-    final int maxScreenCol = 16;
-    final int maxScreenRow = 12;
-    final int screenWidth = tileSize * maxScreenCol; // 768 pixels
-    final int screenHeight = tileSize * maxScreenRow; // 576 pixels
+    public final int maxScreenCol = 16;
+    public final int maxScreenRow = 12;
+    public final int screenWidth = tileSize * maxScreenCol; // 768 pixels
+    public final int screenHeight = tileSize * maxScreenRow; // 576 pixels
 
     //FPS
     int fps = 60;
@@ -22,11 +23,8 @@ public class gamePanel extends JPanel implements Runnable{
     KeyHandler keyH = new KeyHandler();
     Thread gameThread;
     Player player = new Player(this,keyH);
+    TileManager tileManager = new TileManager(this);
 
-    //variables to set payer's default position
-    int playerX = 100;
-    int playerY = 100;
-    int playerSpeed = 4;
 
     public gamePanel(){
         this.setPreferredSize(new Dimension(screenWidth,screenHeight));
@@ -127,8 +125,6 @@ public class gamePanel extends JPanel implements Runnable{
     }
 
 
-
-
     public void update(){
         player.update();
     }
@@ -137,6 +133,8 @@ public class gamePanel extends JPanel implements Runnable{
         super.paintComponent(g);
 
         Graphics2D g2 = (Graphics2D)g;
+
+        tileManager.draw(g2); //done before player as its layered, if done after player cannot be seen
 
         player.draw(g2);
 
