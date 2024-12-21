@@ -12,17 +12,22 @@ public class Player extends Entity{
     gamePanel gp;
     KeyHandler keyH;
 
+    public final int screenX;  //indicates where we draw the player on the screen
+    public final int screenY;  //indicates where we draw the player on the screen
+
     public  Player(gamePanel gp, KeyHandler keyH){
         this.gp = gp;
         this.keyH = keyH;
+        screenX = gp.screenWidth/2 - (gp.tileSize/2);   //we want the player to always be drawn at the center of the screen and the background only moves
+        screenY = gp.screenHeight/2 - (gp.tileSize/2);  //we want the player to always be drawn at the center of the screen and the background only moves
         setDefaultValues();
         getPlayerImage();
     }
 
     //variables to set payer's default position
     public void setDefaultValues(){
-        x = 100;
-        y = 100;
+        worldX = gp.tileSize*23; //player's position on the map, initial position taken respective to the row of the map where we want the player
+        worldY = gp.tileSize*21; //player's position on the map, initial position taken respective to the column of the map where we want the player
         speed = 4;  //technically the distanced moved
         direction = "down";
     }
@@ -32,24 +37,24 @@ public class Player extends Entity{
         try{
 
 
-//            up1 = ImageIO.read(getClass().getResourceAsStream("/Player/up1.png"));
-//            up2 = ImageIO.read(getClass().getResourceAsStream("/Player/up2.png"));
-//            down1 = ImageIO.read(getClass().getResourceAsStream("/Player/down1.png"));
-//            down2 = ImageIO.read(getClass().getResourceAsStream("/Player/down2.png"));
-//            left1 = ImageIO.read(getClass().getResourceAsStream("/Player/left1.png"));
-//            left2 = ImageIO.read(getClass().getResourceAsStream("/Player/left2.png"));
-//            right1 = ImageIO.read(getClass().getResourceAsStream("/Player/right1.png"));
-//            right2 = ImageIO.read(getClass().getResourceAsStream("/Player/right2.png"));
+            up1 = ImageIO.read(getClass().getResourceAsStream("/Player/up1.png"));
+            up2 = ImageIO.read(getClass().getResourceAsStream("/Player/up2.png"));
+            down1 = ImageIO.read(getClass().getResourceAsStream("/Player/down1.png"));
+            down2 = ImageIO.read(getClass().getResourceAsStream("/Player/down2.png"));
+            left1 = ImageIO.read(getClass().getResourceAsStream("/Player/left1.png"));
+            left2 = ImageIO.read(getClass().getResourceAsStream("/Player/left2.png"));
+            right1 = ImageIO.read(getClass().getResourceAsStream("/Player/right1.png"));
+         right2 = ImageIO.read(getClass().getResourceAsStream("/Player/right2.png"));
 
 
-            up1 = ImageIO.read(getClass().getResourceAsStream("/playerSpritesFromRyiSnow/boy_up_1.png"));
-            up2 = ImageIO.read(getClass().getResourceAsStream("/playerSpritesFromRyiSnow/boy_up_2.png"));
-            down1 = ImageIO.read(getClass().getResourceAsStream("/playerSpritesFromRyiSnow/boy_down_1.png"));
-            down2 = ImageIO.read(getClass().getResourceAsStream("/playerSpritesFromRyiSnow/boy_down_2.png"));
-            left1 = ImageIO.read(getClass().getResourceAsStream("/playerSpritesFromRyiSnow/boy_left_1.png"));
-            left2 = ImageIO.read(getClass().getResourceAsStream("/playerSpritesFromRyiSnow/boy_left_2.png"));
-            right1 = ImageIO.read(getClass().getResourceAsStream("/playerSpritesFromRyiSnow/boy_right_1.png"));
-            right2 = ImageIO.read(getClass().getResourceAsStream("/playerSpritesFromRyiSnow/boy_right_2.png"));
+//            up1 = ImageIO.read(getClass().getResourceAsStream("/playerSpritesFromRyiSnow/boy_up_1.png"));
+//            up2 = ImageIO.read(getClass().getResourceAsStream("/playerSpritesFromRyiSnow/boy_up_2.png"));
+//            down1 = ImageIO.read(getClass().getResourceAsStream("/playerSpritesFromRyiSnow/boy_down_1.png"));
+//            down2 = ImageIO.read(getClass().getResourceAsStream("/playerSpritesFromRyiSnow/boy_down_2.png"));
+//            left1 = ImageIO.read(getClass().getResourceAsStream("/playerSpritesFromRyiSnow/boy_left_1.png"));
+//            left2 = ImageIO.read(getClass().getResourceAsStream("/playerSpritesFromRyiSnow/boy_left_2.png"));
+//            right1 = ImageIO.read(getClass().getResourceAsStream("/playerSpritesFromRyiSnow/boy_right_1.png"));
+//            right2 = ImageIO.read(getClass().getResourceAsStream("/playerSpritesFromRyiSnow/boy_right_2.png"));
 
         }catch(IOException e){
 
@@ -64,16 +69,16 @@ public class Player extends Entity{
 
             if (keyH.upPressed == true) {
                 direction = "up";
-                y -= speed;
+                worldY -= speed;
             } else if (keyH.downPressed == true) {
                 direction = "down";
-                y += speed;
+                worldY += speed;
             } else if (keyH.rightPressed == true) {
                 direction = "right";
-                x += speed;
+                worldX += speed;
             } else if (keyH.leftPressed == true) {
                 direction = "left";
-                x -= speed;
+                worldX -= speed;
             }
 
             spriteCounter++;
@@ -129,7 +134,7 @@ public class Player extends Entity{
                 break;
         }
 
-        g2.drawImage(image,x,y,gp.tileSize,gp.tileSize,null);
+        g2.drawImage(image,screenX,screenY,gp.tileSize,gp.tileSize,null);
 
     }
 }
