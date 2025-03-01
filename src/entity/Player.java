@@ -20,6 +20,13 @@ public class Player extends Entity{
         this.keyH = keyH;
         screenX = gp.screenWidth/2 - (gp.tileSize/2);   //we want the player to always be drawn at the center of the screen and the background only moves
         screenY = gp.screenHeight/2 - (gp.tileSize/2);  //we want the player to always be drawn at the center of the screen and the background only moves
+
+        solidArea = new Rectangle();
+        solidArea.x = 8;
+        solidArea.y = 16;
+        solidArea.width = 32;
+        solidArea.height = 32;
+
         setDefaultValues();
         getPlayerImage();
     }
@@ -37,24 +44,24 @@ public class Player extends Entity{
         try{
 
 
-            up1 = ImageIO.read(getClass().getResourceAsStream("/Player/up1.png"));
-            up2 = ImageIO.read(getClass().getResourceAsStream("/Player/up2.png"));
-            down1 = ImageIO.read(getClass().getResourceAsStream("/Player/down1.png"));
-            down2 = ImageIO.read(getClass().getResourceAsStream("/Player/down2.png"));
-            left1 = ImageIO.read(getClass().getResourceAsStream("/Player/left1.png"));
-            left2 = ImageIO.read(getClass().getResourceAsStream("/Player/left2.png"));
-            right1 = ImageIO.read(getClass().getResourceAsStream("/Player/right1.png"));
-         right2 = ImageIO.read(getClass().getResourceAsStream("/Player/right2.png"));
+//            up1 = ImageIO.read(getClass().getResourceAsStream("/Player/up1.png"));
+//            up2 = ImageIO.read(getClass().getResourceAsStream("/Player/up2.png"));
+//            down1 = ImageIO.read(getClass().getResourceAsStream("/Player/down1.png"));
+//            down2 = ImageIO.read(getClass().getResourceAsStream("/Player/down2.png"));
+//            left1 = ImageIO.read(getClass().getResourceAsStream("/Player/left1.png"));
+//            left2 = ImageIO.read(getClass().getResourceAsStream("/Player/left2.png"));
+//            right1 = ImageIO.read(getClass().getResourceAsStream("/Player/right1.png"));
+//         right2 = ImageIO.read(getClass().getResourceAsStream("/Player/right2.png"));
 
 
-//            up1 = ImageIO.read(getClass().getResourceAsStream("/playerSpritesFromRyiSnow/boy_up_1.png"));
-//            up2 = ImageIO.read(getClass().getResourceAsStream("/playerSpritesFromRyiSnow/boy_up_2.png"));
-//            down1 = ImageIO.read(getClass().getResourceAsStream("/playerSpritesFromRyiSnow/boy_down_1.png"));
-//            down2 = ImageIO.read(getClass().getResourceAsStream("/playerSpritesFromRyiSnow/boy_down_2.png"));
-//            left1 = ImageIO.read(getClass().getResourceAsStream("/playerSpritesFromRyiSnow/boy_left_1.png"));
-//            left2 = ImageIO.read(getClass().getResourceAsStream("/playerSpritesFromRyiSnow/boy_left_2.png"));
-//            right1 = ImageIO.read(getClass().getResourceAsStream("/playerSpritesFromRyiSnow/boy_right_1.png"));
-//            right2 = ImageIO.read(getClass().getResourceAsStream("/playerSpritesFromRyiSnow/boy_right_2.png"));
+            up1 = ImageIO.read(getClass().getResourceAsStream("/playerSpritesFromRyiSnow/boy_up_1.png"));
+            up2 = ImageIO.read(getClass().getResourceAsStream("/playerSpritesFromRyiSnow/boy_up_2.png"));
+            down1 = ImageIO.read(getClass().getResourceAsStream("/playerSpritesFromRyiSnow/boy_down_1.png"));
+            down2 = ImageIO.read(getClass().getResourceAsStream("/playerSpritesFromRyiSnow/boy_down_2.png"));
+            left1 = ImageIO.read(getClass().getResourceAsStream("/playerSpritesFromRyiSnow/boy_left_1.png"));
+            left2 = ImageIO.read(getClass().getResourceAsStream("/playerSpritesFromRyiSnow/boy_left_2.png"));
+            right1 = ImageIO.read(getClass().getResourceAsStream("/playerSpritesFromRyiSnow/boy_right_1.png"));
+            right2 = ImageIO.read(getClass().getResourceAsStream("/playerSpritesFromRyiSnow/boy_right_2.png"));
 
         }catch(IOException e){
 
@@ -65,21 +72,53 @@ public class Player extends Entity{
 
     public void update() {
 
-    //if (keyH.upPressed == true || keyH.downPressed == true || keyH.leftPressed == true || keyH.rightPressed == true) {
+    if (keyH.upPressed == true || keyH.downPressed == true || keyH.leftPressed == true || keyH.rightPressed == true) {
 
             if (keyH.upPressed == true) {
                 direction = "up";
-                worldY -= speed;
-            } else if (keyH.downPressed == true) {
-                direction = "down";
-                worldY += speed;
-            } else if (keyH.rightPressed == true) {
-                direction = "right";
-                worldX += speed;
-            } else if (keyH.leftPressed == true) {
-                direction = "left";
-                worldX -= speed;
+
             }
+
+            else if (keyH.downPressed == true) {
+                direction = "down";
+
+            }
+
+            else if (keyH.rightPressed == true) {
+                direction = "right";
+
+            }
+
+            else if (keyH.leftPressed == true) {
+                direction = "left";
+
+            }
+
+            //check tile collision
+            collisionOn = false;
+            gp.cc.checkTile(this);
+
+            //if collision is false player can move
+            if(collisionOn == false){
+                switch(direction){
+                    case "up":
+                        worldY -= speed;
+                        break;
+
+                    case "down":
+                        worldY += speed;
+                        break;
+
+                    case "left":
+                        worldX -= speed;
+                        break;
+
+                    case "right":
+                        worldX += speed;
+                        break;
+                }
+            }
+
 
             spriteCounter++;
             if (spriteCounter > 12) {
@@ -92,7 +131,7 @@ public class Player extends Entity{
 
             }
         }
-    //}
+    }
 
     public void draw(Graphics2D g2){
 //        g2.setColor(Color.white);
